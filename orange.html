@@ -11,14 +11,33 @@
       Everything on this page is orange! ORANGE!
     </h1>
 	<button type = "image" onclick = "update()">
-		<img id = "orangePicture" src="orange.jpg" 
-		style="height:200px;"/>
+	  <img id = "orangePicture" src="orange.jpg" 
+	  style="height:200px;"/>
 	</button>
+	
 	<h3 id = "clickCounter" style = "color:orange"> 0 </h3>
+	
+	<button type = "autoClick" onclick = "toggleAuto()" id = "autoclickButton"
+	style = "height:100px; background-color:orange">
+	  Autoclick the orange
+	</button>
+	
+	<p>
+      <input type = 'range' id = 'autoclickSpeed' value = '5' min = '1' max = '25'> Autoclick Speed </input>
+    </p>
+	
   </body>
   
   <script>
-	var i = 0
+	var i = 0;
+	var speed = 5;
+	var clickLoop;
+	var autoClicking = false;
+	
+	document.addEventListener('DOMContentLoaded', function() {
+		document.getElementById("autoclickSpeed").addEventListener('input', updateSpeed);
+	});
+
 	function update() {
 		addOne(); 
 		playOrangeSound();
@@ -33,5 +52,29 @@
 		document.getElementById("orangeSound").load();
 		document.getElementById("orangeSound").play();
 	};
+	function toggleAuto() {
+		var acButton = document.getElementById("autoclickButton")
+		autoClicking = !autoClicking;
+		if(autoClicking) {
+			clickLoop = setInterval(function(){update()}, 3500/speed);
+			acButton.innerHTML = "Autoclick Enabled";
+			acButton.style.fontWeight = "1000";
+		} else {
+			clearInterval(clickLoop);
+			acButton.innerHTML = "Autoclick Disabled";
+			acButton.style.fontWeight = "normal";
+		}
+	};
+	function updateSpeed() {
+		speed = parseInt(document.getElementById("autoclickSpeed").value);
+		clearInterval(clickLoop);
+		if(autoClicking) {
+			clickLoop = setInterval(function(){update()}, 3500/speed);
+		}
+	};
+	
+	
+	
+	
   </script>
 </html>
