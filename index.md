@@ -6,11 +6,11 @@ I'm currently studying math and CS at UChicago.
 
 ### The links to some of my stuff are below:
 
-#### Resume:
-#### [My LinkedIn](https://www.linkedin.com/in/jiedong-d-62415a113/)
+Resume:
 
+[My LinkedIn](https://www.linkedin.com/in/jiedong-d-62415a113/)
 
-<button type="button" style = "color:black; background-color:orange;"
+Orange Page: <button type="button" style = "color:black; background-color:orange;"
 onclick = "window.location.href = '/orange'">
 	Click Me!
 </button>
