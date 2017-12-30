@@ -6,8 +6,32 @@
 	<link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
-    <p>
+	<audio id = "orangeSound" src = "orange.mp3"> </audio>
+    <h1>
       Everything on this page is orange! ORANGE!
-    </p>
+    </h1>
+	<button type = "image" onclick = "update()">
+		<img id = "orangePicture" src="orange.jpg" 
+		style="height:200px;"/>
+	</button>
+	<h3 id = "clickCounter" style = "color:orange"> 0 </h3>
   </body>
+  
+  <script>
+	var i = 0
+	function update() {
+		addOne(); 
+		playOrangeSound();
+	};
+	function addOne() {
+		i++;
+		document.getElementById("clickCounter").innerHTML = i;
+		img = document.getElementById("orangePicture");
+		img.style.height = (img.height + 3) + "px";
+	};
+	function playOrangeSound() {
+		document.getElementById("orangeSound").load();
+		document.getElementById("orangeSound").play();
+	};
+  </script>
 </html>
