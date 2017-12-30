@@ -6,7 +6,7 @@ I'm currently studying math and CS at UChicago.
 
 ### The links to some of my stuff are below:
 
-[Resume] (http://jiedongduan.com/resume.pdf)
+[Resume](http://jiedongduan.com/resume.pdf)
 
 [My LinkedIn](https://www.linkedin.com/in/jiedong-d-62415a113/)
 
