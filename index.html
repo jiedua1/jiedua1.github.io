@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>title</title>
+  </head>
+  <body>
+  <h1> Press something to add your word to database <h1>
+  <input  id = "textBox"> </input>
+  <button id = "submitButton" onclick = "submit()"> Submit </button>
+  <h1 id ="bigOne"> </h1>
+
+  <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyDZtIhmpQElcmDwjC4KPNL-uAztxyVfEPg",
+      authDomain: "student-life-de3ef.firebaseapp.com",
+      databaseURL: "https://student-life-de3ef.firebaseio.com",
+      projectId: "student-life-de3ef",
+      storageBucket: "student-life-de3ef.appspot.com",
+      messagingSenderId: "126738000442"
+    };
+    firebase.initializeApp(config);
+    var bigOne = document.getElementById("bigOne");
+    var dbRef = firebase.database().ref().child('text');
+    dbRef.on('value', snap => bigOne.innerText = snap.val());
+
+  </script>
+  <script src = "ourScripts.js"> </script>
+  </body>
+</html>
