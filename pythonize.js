@@ -77,6 +77,7 @@ function pythonize(str) {
             tokens.splice(tokenNum, 1);
         }
     }
+
     //combine adjacent elements in the list that contain target symbols
     for(var tokenNum = 0; tokenNum < tokens.length; tokenNum++) {
         var curLine = tokens[tokenNum];
@@ -106,6 +107,10 @@ function pythonize(str) {
             tokens[i] = curLine.substring(0, semicolon_index).padEnd(max_length) + ";";
         } //otherwise check if it's a bracket string
         else if (containsChar(tokens[i], target_chars) && i>0) {
+            //check if the previous string is a singleline comment; then don't combine with it
+            if(tokens[i-1].indexOf("//") != -1) {
+                continue;
+            }   
             //combine the string with the previous string
             //trim left sometimes is redundant
             paddedString = tokens[i-1].padEnd(max_length)+tokens[i].trimLeft();
