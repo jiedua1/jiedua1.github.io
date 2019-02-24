@@ -14,3 +14,8 @@ Orange Page: <button type="button" style = "color:black; background-color:orange
 onclick = "window.location.href = '/orange'">
 	Click Me!
 </button>
+
+Python-esque Bracket Formatter: <button type="button" style = "color:black; background-color:gray;"
+onclick = "window.location.href = '/trollPython'">
+	Click Me!
+</button>
