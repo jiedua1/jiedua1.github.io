@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>title</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+	<h1 style = "color:black"> Pythonize your bracketed code here - Not guaranteed to compile :(</h1> 
+  <body>
+		
+	<p>
+		<textarea rows = "20" cols = "110" id = "input_box" placeholder = "Copy and paste your input code into here! (Java/C/C++)"></textarea>
+	</p>
+
+	<p>
+		<textarea rows = "20" cols = "110" id = "output_box" onchange="auto_grow(this)" placeholder = "Your reformatted code will be displayed here once you press the button!"></textarea>
+	</p>
+
+	<button id = "pythonize_button"> Pythonize Brackets! </button>
+	<p> Your code is now very pythonic 😊 </p>
+	
+	<script>
+	button = document.getElementById("pythonize_button")
+	button.addEventListener('click', function() {
+		pythonized_code = pythonize(document.getElementById('input_box').value);
+		document.getElementById("output_box").value = pythonized_code;
+	})
+	</script>
+	</body>
+
+	<script>
+	maxHeight = "500px";
+	function auto_grow(element) {
+		element.style.maxHeight = maxHeight;
+  	element.style.height = (element.scrollHeight)+"px";
+	}
+
+	</script>
+
+	<script type = "text/javascript" src = "pythonize.js"> </script> 
+
+
+</html>
