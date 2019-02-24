@@ -8,8 +8,22 @@ const target_chars = "{}";
 function containsChar(str, target) {};
 
 function pythonize(str) {
+    //turn tabs into spaces
+    str = str.replace(/\t/g, " ".repeat(indent_size));
+
+    //we want to preserve blank spaces in original formatting, so we keep newlines
     var tokens = str.split("\n");
+
+    
+    for(var i = 0; i<tokens.length; i++) {
+        if(tokens[i] === "") {
+            tokens[i] = "\n";
+        }
+    }
+
+    //preserve all the empty newlines: give them a 
     var lengths = [];
+
     for (var i = 0; i < tokens.length; i++) {
         lengths.push(tokens[i].length);
     }
@@ -100,6 +114,14 @@ function pythonize(str) {
         } 
         //otherwise do nothing, line is fine
     }
+
+    //remove extraneous newlines now
+    for(var i = 0; i<tokens.length; i++) {
+        if(tokens[i] === "\n") {
+            tokens[i] = "";
+        }
+    }
+
     return tokens.join("\n");
 }
 
