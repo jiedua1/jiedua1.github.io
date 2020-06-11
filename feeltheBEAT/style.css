@@ -1,0 +1,108 @@
+body {
+  background-color:black;
+}
+
+.centered {
+  margin: auto;
+  text-align: center;
+}
+
+h1 {
+  color:#00ff00;
+}
+
+.blink {
+  color:#00ff00;
+  animation: blinker 1s step-start infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+code { 
+  font-family: "Lucida Console", Courier, monospace;
+  font-size : 20px;
+  color:#00ff00;
+  display: block;
+  width : 600px;
+}
+
+.floating {
+  height: 50px;
+  color : #00ff00;
+}
+
+p {
+  color : #00ff00;
+  font-size : 14px;
+}
+
+/* hehe google colors */
+.c1:hover {
+  background-color : #4285f4;
+  color : black;
+}
+
+.c2:hover {
+  background-color : #ea4335;
+}
+
+.c3:hover {
+  background-color : #fbbc05;
+}
+
+.c4:hover {
+  background-color : #34a853;
+}
+
+input:hover {
+  background-color : #C3C3C3;
+}
+
+h1 {
+  font-size : 32px
+}
+
+.button {
+  /* Green */
+  background-color: #32a89b;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  border-radius: 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 24px;
+}
+
+.troll {
+  /* found on https://stackoverflow.com/questions/17285514/is-it-possible-to-make-a-squiggly-line */
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: red;
+  font-size : 18px
+}
+
+button {
+  font-size : 30px;
+  padding: 10px 10px;
+  margin: 4px 4px;
+  float: middle;
+  width: 320px;
+  color : #00ff00;
+}
+
+input[type=text], textarea{
+  font-size : 18px;
+  padding: 10px 10px;
+  margin: 4px 4px;
+  float: right;
+  width: 320px;
+  border: 5px solid #34d2eb;
+  border-radius: 16px;
+  box-sizing: border-box;
+}
