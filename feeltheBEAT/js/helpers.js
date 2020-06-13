@@ -110,7 +110,7 @@ const pentatonic = [0, 2, 4, 7, 9]
 const A4 = 440 // Start on A major
 const rel_shifts = [0, 5, 7, 9] // gold old simple pop I-IV-V-VI chords :)
 
-const base_arpeg = [0, 4, 7, 11] // Basic arpeggio that will build all of the music!
+const base_arpeg = [0, 4, 7, 12] // Basic arpeggio that will build all of the music!
 const OCTAVE = 12
 var global_vol = 0 // Decibel adjustment for age!
 
@@ -149,24 +149,53 @@ function swapBack(arpeggio) {
 function swapMid(arpeggio) {
     let temp = arpeggio[1]
     arpeggio[1] = arpeggio[2];
-    arpeggio[2] = arpeggio[1];
+    arpeggio[2] = temp;
+}
+
+function sanitize_age(age, def_age = 12) {
+    age = parseInt(age);
+    if (isNaN(age)) {
+        return def_age;
+    } else {
+        MAX_AGE = 100
+        return constrain(age, 0, MAX_AGE);
+    }
 }
 
 function startMusic() {
     // Stop previous music if playing. Glitchy; should probably refresh page for now
     Tone.Transport.cancel(0);
 
-    age = parseInt(document.querySelector("#age").value);
+    bio = document.querySelector('textarea').value;
+    // Say the whole bio once in a DEEP voice
+    var voices = window.speechSynthesis.getVoices();
+    var voice = voices[random(0, voices.length-1)];
+
+    msg = new SpeechSynthesisUtterance(bio);
+    msg.pitch = 1.5;
+    msg.rate = 0.7;
+    msg.voice = voice;
+    msg.volume = 1;
+
+    window.speechSynthesis.speak(msg);
+    
+    // Input: raw age string; output, number
     fname = document.querySelector('#fname').value;
     lname = document.querySelector('#lname').value;
-    bio = document.querySelector('textarea').value;
+    age = sanitize_age(document.querySelector('#age').value);
 
     words = bio.split(" ");
 
     console.log(calcBPM(age));
     Tone.Transport.bpm.value = calcBPM(age);
-    global_vol = map(Tone.Transport.bpm.value, 0, 100, 0, 8);
-    
+
+    // Global volume adjustment! add this to synths
+    // TODO: Debug. Global volume adjustment doesn't seem to be working..
+    global_vol = map(age, 0, 100, -15, 5);
+    Tone.Master.volume = global_vol;
+
+    console.log(global_vol);
+
     random_word_loop(words);
     /* TODO: modulo character codes of the letters by some prime number or whatever number
      * that will correspond to different chord progressions and/or shifts between chord progressions!
@@ -254,19 +283,31 @@ function loop_measure() {
 
     // Switch keys randomly!
     if (l_id == 0) {
-        base_shift += random(-3, 3);
+        base_shift += random(-7, 7);
         base_shift = constrain(base_shift, -OCTAVE, OCTAVE);
     }
 }
 
 // Arpeggio lasts a half measure; plays it twice
 function play_arpeggio() {
-    console.log(arpeg);
+    
+    console.log("Current unadjusted arpeggio pattern: " + arpeg);
     
     let synth = new Tone.Synth().toMaster();
+
+    // Arpeggio is different depending on what our base note is
+    // the vi chord base note (9) needs slight modification to arpeggio
+    var temp_arpeg;
+    if ([0, 5, 7].includes(rel_shift)) {
+        temp_arpeg = arpeg
+    } else if ([9].includes(rel_shift)) {
+        let i = arpeg.indexOf(4);
+        temp_arpeg = arpeg.slice(0); // Clones the array
+        temp_arpeg[i] = 3
+    }
     for(let i = 0; i < 8; i++) {
         Tone.Transport.scheduleOnce(function(time){
-            synth.triggerAttackRelease(freq(A4, arpeg[i%4] + base_shift + rel_shift), '8t');
+            synth.triggerAttackRelease(freq(A4, temp_arpeg[i%4] + base_shift + rel_shift), '8t');
         }, Tone.Time('8n') * i);
     }
 
@@ -294,6 +335,7 @@ function random_word_loop(words) {
         // words in the bio!
         msg.pitch = map(base_shift, -12, 12, 0.2, 1.4) + Math.random() * 0.4; 
         msg.tempo = Tone.Transport.bpm.value / 120
+        msg.volume = 1;
         window.speechSynthesis.speak(msg);
     }
     // Configure delays for random words

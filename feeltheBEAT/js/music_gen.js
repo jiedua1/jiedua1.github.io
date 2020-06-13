@@ -160,7 +160,6 @@ function setupApp() {
     // Say a welcome to the user and initialize music! msg will say the bio later...
     var greeting = "Hello, " + document.querySelector('#fname').value;
 
-    
     msg = new SpeechSynthesisUtterance(greeting);
     window.speechSynthesis.speak(msg);
 
@@ -214,15 +213,13 @@ function calcBPM(age) {
         real_age = 0;
     }
 
-    
-
     // Age will determine tempo of piece according to a piecewise linear interpolation between
-    // the points (0, 80), (20, 160), (80, 60); this is to roughly match your general 
+    // the points (0, 80), (25, 180), (80, 70); this is to roughly match your general 
     // energy levels :) 
-    if (real_age >= 0 && real_age <= 20) {
-        return 80 + (160-80) * real_age/20;
+    if (real_age >= 0 && real_age <= 25) {
+        return map(real_age, 0, 25, 80, 180);
     } else {
-        return 160 - (100/60) * (real_age - 20)
+        return map(real_age, 25, 80, 180, 70);
     }
 }
 
@@ -404,7 +401,7 @@ function drawWrists(dx = 0, dy = 0) {
                 if (lastLpresent && lvel > vtrigger && !LDelay) {
                     LDelay = true;
                     // Particles have no gravity for left hand!
-                    playDrumPow(lastLx + dx, lastLy + dy, 50, lvel/4) // send absolute coordinates since these will animate w.r.t the 
+                    playDrumPow(lastLx + dx, lastLy + dy, 80, lvel/4) // send absolute coordinates since these will animate w.r.t the 
 
                     setTimeout(() => LDelay = false, minDelay);
 
@@ -438,7 +435,7 @@ function drawWrists(dx = 0, dy = 0) {
 // Play the drum at the position of x,y and make a little pow on the screen to show you played the drums
 function playDrumPow(x, y, gravity = 50, force = 20, note = 'G1') {
     drum = new Tone.MembraneSynth().toMaster();
-    drum.volume.value = force / 5;
+    drum.volume.value = 8 + force / 5;
     drum.triggerAttackRelease(note, "8n");
 
     // Add particle where hand is!
