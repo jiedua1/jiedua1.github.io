@@ -110,7 +110,8 @@ const pentatonic = [0, 2, 4, 7, 9]
 const A4 = 440 // Start on A major
 const rel_shifts = [0, 5, 7, 9] // gold old simple pop I-IV-V-VI chords :)
 
-const base_arpeg = [0, 4, 7, 12] // Basic arpeggio that will build all of the music!
+const base_arpeg = [0, 4, 7, 11] // Basic arpeggio that will build all of the music!
+const OCTAVE = 12
 var global_vol = 0 // Decibel adjustment for age!
 
 base_shift = 0; // Can go either an octave lower or higher, so -12 to +12
@@ -152,7 +153,9 @@ function swapMid(arpeggio) {
 }
 
 function startMusic() {
-    
+    // Stop previous music if playing. Glitchy; should probably refresh page for now
+    Tone.Transport.cancel(0);
+
     age = parseInt(document.querySelector("#age").value);
     fname = document.querySelector('#fname').value;
     lname = document.querySelector('#lname').value;
@@ -187,11 +190,14 @@ function startMusic() {
 
     // Tone.js is wonky... weird delay + callbacks don't work properly
     // So just using a global variable hack
-    play_arpeggio();
-    loop_measure();
+    Tone.Transport.schedule(function(time){
+        play_arpeggio();
+        loop_measure();
+    }, '0');
+
+    Tone.Transport.loop = true;
+    Tone.Transport.loopEnd = '1m';
     Tone.Transport.start(0);
-    
-    
 }
 
 /* Shittyish algorithm v1; should generate *eh* and *generic* music lol
@@ -211,13 +217,45 @@ function startMusic() {
 
 function loop_measure() {
     l_id = (l_id + 1) % lname.length;
-    synth = new Tone.Synth().toMaster();
-    rel_shift = rel_shifts[lname.charCodeAt(l_id) % 4]
-    console.log(rel_shift)
-    synth.triggerAttackRelease(freq(A4, base_shift + rel_shift), '2t');
+    var synth_harmony = new Tone.PolySynth(3, Tone.Synth, {
+        // additional args here for the synth
+    }).toMaster();
+
+    var reg_synth = new Tone.Synth().toMaster();
+
+    //var synth_harmony = new Tone.Synth().toMaster();
+    rel_shift = rel_shifts[lname.charCodeAt(l_id) % rel_shifts.length]
+    // console.log("RELATIVE SHIFT " + rel_shift);
+
+    // Hold whole note and then play note octave higher 
+    Tone.Transport.scheduleOnce(function(time){
+        // Standard major chord
+        let baseNote = freq(A4, base_shift + rel_shift - OCTAVE)
+        // Adjust triads based on scale note we're on... only vi is affected b/c minor triad
+        let mid, hi;
+        if ([0, 5, 7].includes(rel_shift)) {
+            mid = freq(baseNote, 4);
+            hi = freq(baseNote, 7);
+        } else if ([9].includes(rel_shift)) {
+            mid = freq(baseNote, 3);
+            hi = freq(baseNote, 7);
+        }
+        // console.log(baseNote, mid, hi)
+        synth_harmony.triggerAttackRelease([baseNote, mid, hi], '1n');
+    }, '0');
+    
+    Tone.Transport.scheduleOnce(function(time){
+        // Standard major chord
+        let baseNote = freq(A4, base_shift + rel_shift)
+        let mid = freq(baseNote, 4)
+        let hi = (baseNote, 7)
+        reg_synth.triggerAttackRelease(baseNote, '2n');
+    }, '2n');
+
     // Switch keys randomly!
     if (l_id == 0) {
-        base_shift += random(-4, 4);
+        base_shift += random(-3, 3);
+        base_shift = constrain(base_shift, -OCTAVE, OCTAVE);
     }
 }
 
@@ -225,21 +263,23 @@ function loop_measure() {
 function play_arpeggio() {
     console.log(arpeg);
     
-    synth = new Tone.Synth().toMaster();
+    let synth = new Tone.Synth().toMaster();
     for(let i = 0; i < 8; i++) {
-        Tone.Transport.schedule(function(time){
+        Tone.Transport.scheduleOnce(function(time){
             synth.triggerAttackRelease(freq(A4, arpeg[i%4] + base_shift + rel_shift), '8t');
-        }, Tone.Time('8t') * i);
+        }, Tone.Time('8n') * i);
     }
 
     f_id = (f_id + 1) % fname.length;
-    if (fname.charCodeAt(f_id) % 4 == 0) {
+    if (fname.charCodeAt(f_id) % 5 == 0) {
         swapFront(arpeg);
-    } else if (fname.charCodeAt(f_id) % 4 == 1) {
+    } else if (fname.charCodeAt(f_id) % 5 == 1) {
         swapBack(arpeg);
-    } else if (fname.charCodeAt(f_id) % 4 == 2) {
+    } else if (fname.charCodeAt(f_id) % 5 == 2) {
         swapMid(arpeg);
-    } // otherwise do nothing
+    } else if (fname.charCodeAt(f_id) % 5 == 3) {
+        arpeg.reverse()
+    } // Otherwise do nothing
 }
 
 // Says a random word among the words in a random voice
@@ -258,7 +298,7 @@ function random_word_loop(words) {
     }
     // Configure delays for random words
     low_delay = 600;
-    high_delay = 3500;
+    high_delay = 3000;
     delay = random(low_delay, high_delay);
     setTimeout(() => random_word_loop(words), delay); 
 }
