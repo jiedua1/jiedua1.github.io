@@ -283,7 +283,7 @@ function loop_measure() {
 
     // Switch keys randomly!
     if (l_id == 0) {
-        base_shift += random(-7, 7);
+        base_shift += int(random(-7, 8)); // Move an integral number of half steps
         base_shift = constrain(base_shift, -OCTAVE, OCTAVE);
     }
 }
