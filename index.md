@@ -19,3 +19,8 @@ Python-esque Bracket Formatter: <button type="button" style = "color:black; back
 onclick = "window.location.href = '/trollPython'">
 	Click Me!
 </button>
+
+Feel the BEAT: <button type="button" style = "color:black; background-color:gray;"
+onclick = "window.location.href = '/feeltheBEAT'">
+	DON'T Click Me!
+</button>
